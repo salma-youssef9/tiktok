@@ -1,0 +1,16 @@
+{
+  "name": "tiktok-clone-backend",
+  "version": "1.0.0",
+  "description": "Demo auth backend for a class-project TikTok clone",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5"
+  }
+}
