@@ -246,6 +246,16 @@
   }
 
   .video-stage.c1{background:linear-gradient(135deg,#ff5f6d,#ffc371);}
+  .video-stage.loading{background:linear-gradient(135deg,#4b4b4b,#a2a2a2,#656565);}
+  .video-loading{
+    width:42px; height:42px;
+    border:4px solid rgba(255,255,255,.3);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:video-loading-spin .9s linear infinite;
+    z-index:1;
+  }
+  @keyframes video-loading-spin{to{transform:rotate(360deg);}}
   .video-stage.c2{background:linear-gradient(135deg,#43cea2,#185a9d);}
   .video-stage.c3{background:linear-gradient(135deg,#7f00ff,#e100ff);}
   .video-stage.c4{background:linear-gradient(135deg,#f7971e,#ffd200);}
@@ -390,6 +400,7 @@
   }
   .user-chip.show{display:flex;}
   .user-chip .avatar-sm{width:26px; height:26px;}
+  .user-chip .avatar-sm{background:#000;}
 
   /* Toast */
   .toast{
@@ -454,11 +465,10 @@
 </div>
 
 <!-- Login / Signup Modal -->
-<div class="modal-overlay" id="loginOverlay">
+<div class="modal-overlay open" id="loginOverlay">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="authModalTitle">Log in</h2>
-      <button class="modal-close" id="loginClose">&times;</button>
+      <h2 id="authModalTitle">Log in to watch</h2>
     </div>
     <div class="modal-body">
 
@@ -491,7 +501,6 @@
       </form>
 
       <div class="auth-status" id="authStatus"></div>
-
     </div>
   </div>
 </div>
@@ -517,12 +526,6 @@
       LIVE
     </div>
     <hr>
-    <div class="section-label">Suggested accounts</div>
-    <div class="followitem"><div class="avatar-sm"></div> creator_maya</div>
-    <div class="followitem"><div class="avatar-sm"></div> dev.danny</div>
-    <div class="followitem"><div class="avatar-sm"></div> studio.jules</div>
-    <div class="followitem"><div class="avatar-sm"></div> foodie_omar</div>
-    <hr>
     <div class="section-label">Following accounts</div>
     <div class="followitem"><div class="avatar-sm"></div> nova.codes</div>
     <div class="followitem"><div class="avatar-sm"></div> travel_with_lee</div>
@@ -533,11 +536,7 @@
 
 <script>
 const videos = [
-  {c:"c1", user:"@creator_maya", caption:"POV: your CS project is due tomorrow and you're just now starting 😅 #comedy #relatable", sound:"original sound - creator_maya", likes:"128.4K", comments:"1,203", shares:"3,401"},
-  {c:"c2", user:"@dev.danny", caption:"Rebuilding TikTok's UI in one HTML file for a class project 💻 #coding #webdev", sound:"lofi beats - chill vibes", likes:"84.2K", comments:"942", shares:"1,880"},
-  {c:"c3", user:"@studio.jules", caption:"day 47 of learning css grid and i think i finally get it", sound:"original sound - studio.jules", likes:"56.7K", comments:"512", shares:"940"},
-  {c:"c4", user:"@foodie_omar", caption:"5 minute koshari recipe that actually slaps 🍚🔥 #food #recipe", sound:"trending sound - remix", likes:"212.9K", comments:"3,104", shares:"9,220"},
-  {c:"c5", user:"@nova.codes", caption:"scroll snap + flex is all you need for a feed like this ✨", sound:"original sound - nova.codes", likes:"39.1K", comments:"301", shares:"512"}
+  {c:"c1", loading:true, user:"Tiktok User", caption:"#fyp", sound:"original sound", likes:"128.4K", comments:"1,203", shares:"3,401"},
 ];
 
 const feedWrap = document.getElementById('feedWrap');
@@ -552,8 +551,8 @@ videos.forEach((v, i) => {
   const card = document.createElement('div');
   card.className = 'video-card';
   card.innerHTML = `
-    <div class="video-stage ${v.c}" data-index="${i}">
-      <span class="play-pause-icon">▶</span>
+    <div class="video-stage ${v.c}${v.loading ? ' loading' : ''}" data-index="${i}">
+      ${v.loading ? '<div class="video-loading" aria-label="Video loading"></div>' : '<span class="play-pause-icon">▶</span>'}
       <div class="video-meta">
         <div class="username">${v.user}</div>
         <div class="caption">${v.caption}</div>
@@ -711,7 +710,6 @@ const API_BASE = '';
 
 const loginBtn = document.getElementById('loginBtn');
 const loginOverlay = document.getElementById('loginOverlay');
-const loginClose = document.getElementById('loginClose');
 const loginForm = document.getElementById('loginForm');
 const loginUsername = document.getElementById('loginUsername');
 const loginPassword = document.getElementById('loginPassword');
@@ -739,7 +737,7 @@ function switchAuthView(view){
   });
   authTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === view));
   document.getElementById('authTabs').style.display = (view === 'forgot') ? 'none' : 'flex';
-  authModalTitle.textContent = view === 'signup' ? 'Sign up' : view === 'forgot' ? 'Reset password' : 'Log in';
+  authModalTitle.textContent = view === 'signup' ? 'Sign up' : view === 'forgot' ? 'Reset password' : 'Log in to watch';
   setAuthStatus('');
 }
 
@@ -759,10 +757,6 @@ function closeLoginModal(){
 }
 
 loginBtn.addEventListener('click', openLoginModal);
-loginClose.addEventListener('click', closeLoginModal);
-loginOverlay.addEventListener('click', (e) => {
-  if (e.target === loginOverlay) closeLoginModal();
-});
 
 function logInAs(name){
   userChipName.textContent = name;
@@ -864,11 +858,10 @@ userChip.addEventListener('click', () => {
   showToast('Logged out');
 });
 
-// Close modals with Escape key
+// The login overlay stays blocking until authentication succeeds.
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape'){
     closeUploadModal();
-    closeLoginModal();
   }
 });
 </script>
