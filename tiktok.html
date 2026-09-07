@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>TikTok Clone</title>
 <style>
   :root{
@@ -244,6 +244,12 @@
     display:flex; align-items:center; justify-content:center;
     font-size:13px; font-weight:900; color:#fff;
   }
+  .side-actions .profile-pic.default-profile{
+    background:#777;
+    border-color:#aaa;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .default-profile svg{width:28px; height:28px; color:#d5d5d5;}
 
   .video-stage.c1{background:linear-gradient(135deg,#ff5f6d,#ffc371);}
   .video-stage.loading{background:linear-gradient(135deg,#4b4b4b,#a2a2a2,#656565);}
@@ -255,6 +261,15 @@
     animation:video-loading-spin .9s linear infinite;
     z-index:1;
   }
+  .video-unavailable{
+    display:none;
+    color:#fff;
+    font-size:16px;
+    font-weight:600;
+    z-index:1;
+  }
+  .video-stage.unavailable .video-loading{display:none;}
+  .video-stage.unavailable .video-unavailable{display:block;}
   @keyframes video-loading-spin{to{transform:rotate(360deg);}}
   .video-stage.c2{background:linear-gradient(135deg,#43cea2,#185a9d);}
   .video-stage.c3{background:linear-gradient(135deg,#7f00ff,#e100ff);}
@@ -266,6 +281,41 @@
     .video-stage{width:92vw;}
     .side-actions{right:10px;}
     .video-meta{right:70px;}
+  }
+
+  @media (max-width:600px){
+    .topnav{
+      height:56px;
+      padding:0 12px;
+    }
+    .logo{font-size:22px;}
+    .searchbar{display:none;}
+    .navright{gap:8px;}
+    .upload-btn{
+      width:38px;
+      height:36px;
+      justify-content:center;
+      padding:8px;
+      font-size:0;
+    }
+    .upload-btn svg{width:20px; height:20px;}
+    .login-btn{padding:8px 12px; font-size:13px;}
+    .app{padding-top:56px; height:100vh; height:100svh;}
+    .feed-wrap{height:calc(100vh - 56px); height:calc(100svh - 56px);}
+    .video-card{height:calc(100vh - 56px); height:calc(100svh - 56px);}
+    .video-stage{
+      width:100vw;
+      height:100%;
+      max-height:none;
+      border-radius:0;
+    }
+    .side-actions{right:12px; bottom:88px; gap:18px;}
+    .video-meta{left:14px; right:76px; bottom:22px;}
+    .modal{
+      max-height:calc(100vh - 24px);
+      max-height:calc(100svh - 24px);
+      overflow-y:auto;
+    }
   }
 
   /* ===== Modal ===== */
@@ -553,6 +603,7 @@ videos.forEach((v, i) => {
   card.innerHTML = `
     <div class="video-stage ${v.c}${v.loading ? ' loading' : ''}" data-index="${i}">
       ${v.loading ? '<div class="video-loading" aria-label="Video loading"></div>' : '<span class="play-pause-icon">▶</span>'}
+      ${v.loading ? '<div class="video-unavailable">This video is unavailable</div>' : ''}
       <div class="video-meta">
         <div class="username">${v.user}</div>
         <div class="caption">${v.caption}</div>
@@ -560,7 +611,7 @@ videos.forEach((v, i) => {
       </div>
       <div class="side-actions">
         <div class="action-btn">
-          <div class="profile-pic"><span class="plus">+</span></div>
+          <div class="profile-pic${v.loading ? ' default-profile' : ''}">${v.loading ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-label="Default profile picture"><circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4.1 3.5-6 8-6s7.3 1.9 8 6H4z"/></svg>' : '<span class="plus">+</span>'}</div>
         </div>
         <div class="action-btn">
           <button class="icon-circle like-btn">${heartIcon(false)}</button>
@@ -582,6 +633,11 @@ videos.forEach((v, i) => {
     </div>
   `;
   feedWrap.appendChild(card);
+  if (v.loading){
+    setTimeout(() => {
+      card.querySelector('.video-stage').classList.add('unavailable');
+    }, 5000);
+  }
 });
 
 // Like button toggle
@@ -606,6 +662,7 @@ document.querySelectorAll('.video-stage').forEach(stage => {
   stage.addEventListener('click', () => {
     playing = !playing;
     const icon = stage.querySelector('.play-pause-icon');
+    if (!icon) return;
     icon.textContent = playing ? '▶' : '❚❚';
     icon.style.opacity = '1';
     setTimeout(() => { icon.style.opacity = '0'; }, 400);
