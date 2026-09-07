@@ -707,7 +707,10 @@ recordBtn.addEventListener('click', () => {
 // ===== Auth: login / signup / forgot / reset =====
 // Point this at wherever your backend is running (see the tiktok-backend
 // folder — run `npm install && npm start` there, defaults to port 3000).
-const API_BASE = 'http://localhost:3000';
+// Since the server now serves this HTML file itself, we can just use
+// relative paths — this automatically works whether you're testing on
+// localhost or someone else loads it from a shared ngrok URL.
+const API_BASE = '';
 
 const loginBtn = document.getElementById('loginBtn');
 const loginOverlay = document.getElementById('loginOverlay');
@@ -796,7 +799,7 @@ loginForm.addEventListener('submit', async (e) => {
     loginForm.reset();
     showToast(`Logged in as ${data.username}`);
   }catch(err){
-    setAuthStatus('Could not reach the backend. Is it running on localhost:3000?', 'error');
+    setAuthStatus('Could not reach the backend. Make sure the server is running.', 'error');
   }
 });
 
@@ -825,7 +828,7 @@ signupForm.addEventListener('submit', async (e) => {
     signupForm.reset();
     setTimeout(() => switchAuthView('login'), 900);
   }catch(err){
-    setAuthStatus('Could not reach the backend. Is it running on localhost:3000?', 'error');
+    setAuthStatus('Could not reach the backend. Make sure the server is running.', 'error');
   }
 });
 
@@ -853,7 +856,7 @@ forgotForm.addEventListener('submit', async (e) => {
     authStatus.className = 'auth-status success';
     forgotForm.reset();
   }catch(err){
-    setAuthStatus('Could not reach the backend. Is it running on localhost:3000?', 'error');
+    setAuthStatus('Could not reach the backend. Make sure the server is running.', 'error');
   }
 });
 
