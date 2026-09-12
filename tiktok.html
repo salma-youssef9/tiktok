@@ -263,13 +263,17 @@
   }
   .video-unavailable{
     display:none;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
     color:#fff;
     font-size:16px;
     font-weight:600;
     z-index:1;
   }
+  .video-unavailable svg{width:54px; height:54px;}
+  .video-stage.unavailable .video-unavailable{display:flex;}
   .video-stage.unavailable .video-loading{display:none;}
-  .video-stage.unavailable .video-unavailable{display:block;}
   @keyframes video-loading-spin{to{transform:rotate(360deg);}}
   .video-stage.c2{background:linear-gradient(135deg,#43cea2,#185a9d);}
   .video-stage.c3{background:linear-gradient(135deg,#7f00ff,#e100ff);}
@@ -586,7 +590,7 @@
 
 <script>
 const videos = [
-  {c:"c1", loading:true, user:"Tiktok User", caption:"#fyp", sound:"original sound", likes:"128.4K", comments:"1,203", shares:"3,401"},
+  {c:"c1", loading:true, user:"غزل🍉@", caption:"", sound:"", likes:"128.4K", comments:"1,203", shares:"3,401"},
 ];
 
 const feedWrap = document.getElementById('feedWrap');
@@ -603,11 +607,11 @@ videos.forEach((v, i) => {
   card.innerHTML = `
     <div class="video-stage ${v.c}${v.loading ? ' loading' : ''}" data-index="${i}">
       ${v.loading ? '<div class="video-loading" aria-label="Video loading"></div>' : '<span class="play-pause-icon">▶</span>'}
-      ${v.loading ? '<div class="video-unavailable">This video is not available</div>' : ''}
+      ${v.loading ? '<div class="video-unavailable"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-label="Video unavailable"><rect x="8" y="18" width="34" height="28" rx="4"/><path d="m42 27 14-8v26l-14-8z"/><circle cx="25" cy="32" r="8"/><path d="M6 8 58 56"/></svg><span>This video by @🍉غزل is unavailable.</span></div>' : ''}
       <div class="video-meta">
         <div class="username">${v.user}</div>
-        <div class="caption">${v.caption}</div>
-        <div class="sound">🎵 ${v.sound}</div>
+        ${v.caption ? `<div class="caption">${v.caption}</div>` : ''}
+        ${v.sound ? `<div class="sound">🎵 ${v.sound}</div>` : ''}
       </div>
       <div class="side-actions">
         <div class="action-btn">
