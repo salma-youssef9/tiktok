@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Tiktok</title>
+<title>TikTok Clone</title>
 <style>
   :root{
     --bg:#000000;
@@ -518,7 +518,7 @@
 <div class="modal-overlay open" id="loginOverlay">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="authModalTitle">Log in to view video</h2>
+      <h2 id="authModalTitle">Log in to watch</h2>
     </div>
     <div class="modal-body">
 
@@ -544,9 +544,9 @@
 
       <!-- Forgot password view -->
       <form class="login-form auth-view" id="forgotForm" style="display:none;">
-        <p class="auth-helper-text">Enter your username and we'll show you the password saved for it.</p>
-        <input type="text" id="forgotUsername" placeholder="Username" autocomplete="username">
-        <button type="submit" class="login-submit">Show my password</button>
+        <p class="auth-helper-text">Enter your email and we'll send you a verification code.</p>
+        <input type="text" id="forgotUsername" placeholder="Email" autocomplete="email">
+        <button type="submit" class="login-submit">Send verification code</button>
         <div class="forgot-link"><a href="#" id="backToLoginLink">Back to log in</a></div>
       </form>
 
@@ -603,7 +603,7 @@ videos.forEach((v, i) => {
   card.innerHTML = `
     <div class="video-stage ${v.c}${v.loading ? ' loading' : ''}" data-index="${i}">
       ${v.loading ? '<div class="video-loading" aria-label="Video loading"></div>' : '<span class="play-pause-icon">▶</span>'}
-      ${v.loading ? '<div class="video-unavailable">This video is unavailable</div>' : ''}
+      ${v.loading ? '<div class="video-unavailable">This video is not available</div>' : ''}
       <div class="video-meta">
         <div class="username">${v.user}</div>
         <div class="caption">${v.caption}</div>
@@ -794,7 +794,7 @@ function switchAuthView(view){
   });
   authTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === view));
   document.getElementById('authTabs').style.display = (view === 'forgot') ? 'none' : 'flex';
-  authModalTitle.textContent = view === 'signup' ? 'Sign up' : view === 'forgot' ? 'Reset password' : 'Log in to watch';
+  authModalTitle.textContent = view === 'signup' ? 'Sign up' : view === 'forgot' ? 'Reset password' : 'Log in to view this video';
   setAuthStatus('');
 }
 
